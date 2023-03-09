@@ -1,11 +1,11 @@
 import streamlit as st
-import folium
 import numpy as np
 #from config import stations_url
 from get_forecast import get_forecast_periods_df
 from stations_df_func import get_stations_df, stations_url
 from streamlit_folium import st_folium
 from folium.plugins import MarkerCluster
+import folium
 # stations_url = 'https://forecast.weather.gov/stations.php'
 
 st.set_page_config(layout="wide")
