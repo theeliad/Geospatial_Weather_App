@@ -14,7 +14,7 @@ def get_forecast_periods_df(output):
     """
 
     # Sets the user agent to 'Geospatial_Weather_App' and an email address to identify the source of the API request.
-    api_connector.set_user_agent('Geospatial_Weather_App', 'policapee@gmail.com')
+    api_connector.set_user_agent('Geospatial_Weather_App', 'null')
 
     # Obtain latitude and longitude data for a given location using the api_connector module
     latlon_pointdata = api_connector.get_point(output['last_object_clicked']['lat'],

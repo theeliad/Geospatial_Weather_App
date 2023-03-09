@@ -108,7 +108,8 @@ def app():
     with row1_col2:
         st.write(output)
     with st.expander("Click here to expand and view weather forecast"):
-        detailed_forecast_df = get_forecast_periods_df(output)
-        st.dataframe(detailed_forecast_df)
+        if output["last_object_clicked"] is not None:
+            detailed_forecast_df = get_forecast_periods_df(output)
+            st.dataframe(detailed_forecast_df)
 main()
 app()
