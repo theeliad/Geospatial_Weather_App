@@ -34,3 +34,9 @@ def get_forecast_periods_df(output):
                                                                       'dewpoint', 'relativeHumidity', 'icon'])
     # Return the resulting dataframe
     return full_forecast_periods_df
+
+
+if __name__ == "__main__":
+    output = {'last_object_clicked': {'lat': 39.9, 'lng': -99.9}}
+    detailed_forecast_df = get_forecast_periods_df(output)
+    print(detailed_forecast_df)
