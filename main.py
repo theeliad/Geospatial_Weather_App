@@ -1,31 +1,73 @@
-import streamlit as st
+import folium
 import numpy as np
-#from config import stations_url
+import streamlit as st
+from folium.plugins import MarkerCluster
+from streamlit_folium import st_folium
+
 from get_forecast import get_forecast_periods_df
 from stations_df_func import get_stations_df, stations_url
-from streamlit_folium import st_folium
-from folium.plugins import MarkerCluster
-import folium
-# stations_url = 'https://forecast.weather.gov/stations.php'
+
 
 st.set_page_config(layout="wide")
 
 
+@st.cache_resource(show_spinner=False)
+def get_stations():
+    stations_df = get_stations_df(stations_url)
+    return stations_df
+
+
+@st.cache_resource(show_spinner=False)
+def get_marker_cluster(data):
+    '''Add markers with popups and clustering'''
+    marker_cluster = MarkerCluster()
+    for i in range(len(data)):
+        folium.Marker(
+            location=[data.iloc[i]["Latitude"], data.iloc[i]["Longitude"]],
+            popup=f"Name: {data.iloc[i]['Station Name']}, STID: {data.iloc[i]['STID']}, State: {data.iloc[i]['State']}",
+        ).add_to(marker_cluster)
+    return marker_cluster
+
+
+@st.cache_resource(show_spinner=False)
+def get_folium_map(stations_df):
+    '''Create a folium map with a marker cluster'''
+    location = [np.mean(stations_df.Latitude), np.mean(stations_df.Longitude)]
+    folium_map = folium.Map(
+        location=location,
+        tiles='OpenStreetMap',
+        zoom_start=5
+    )
+    marker_cluster = get_marker_cluster(stations_df)
+    marker_cluster.add_to(folium_map)
+    folium.LayerControl().add_to(folium_map)
+    folium.plugins.LocateControl().add_to(folium_map)
+    folium.plugins.Fullscreen().add_to(folium_map)
+    folium.plugins.Geocoder().add_to(folium_map)
+    return folium_map
+
+
+@st.cache_data(show_spinner=False)
+def get_forecast_df(output):
+    '''Get the forecast data from the NWS API'''
+    forecast_df = get_forecast_periods_df(output)
+    return forecast_df
+
+
 def main():
-
+    '''Shows the title and sidebar of the app
+    '''
     st.title("Geospatial Weather App")
-
     st.sidebar.title("About")
     st.sidebar.info(
         """
         GitHub repository: <https://github.com/theeliad>
         """
     )
-
     st.sidebar.title("Contact")
     st.sidebar.info(
         """
-        Eli Policape: 
+        Eli Policape:
         [GitHub](https://github.com/theeliad) | [LinkedIn](https://www.linkedin.com/in/eli-p-96312163/)
         """
     )
@@ -39,77 +81,44 @@ def app():
         The app also uses the Streamlit-Folium integration to display the map in a Streamlit component.
     """
 
-    st.title("Search Weather Maps")
+    st.header("Search Weather Maps")
     st.markdown(
         """
     This Streamlit app displays of map of weather stations in the United States using weather data from the National Weather Service API in just a few clicks.
-    
+
         """
     )
 
-    row1_col1, row1_col2 = st.columns([3, 1])
+    col1, col2 = st.columns([3, 1])
     width = 1000
     height = 600
-    tiles = None
 
-    with row1_col2:
-        # Get the DataFrame of weather stations
-
-        @st.cache_resource
-        def get_stations():
-            stations_df = get_stations_df(stations_url)
-            return stations_df
-
-        stations_df = get_stations()
-
+    with col2:
+        with st.spinner("Loading weather stations..."):
+            # Get the DataFrame of weather stations
+            stations_df = get_stations()
         # Display the DataFrame of weather stations
-        #st.dataframe(stations_df)
+        st.dataframe(stations_df)
 
-        with row1_col1:
-            # Display the Map of weather stations
+    with col1:
+        # Display the Map of weather stations
+        folium_map = get_folium_map(stations_df)
 
-            data = stations_df
-            location = [np.mean(data.Latitude), np.mean(data.Longitude)]
-            t = folium.Map(
-                location=location,
-                tiles='OpenStreetMap',
-                zoom_start=5
-            )
+        # Display the map
+        output = st_folium(
+            folium_map, width=width, height=height, returned_objects=["last_object_clicked"]
+        )
 
-            # Add markers with popups and clustering
-            @st.cache_data
-            def get_marker_cluster(data):
-                marker_cluster = MarkerCluster()
-                for i in range(len(data)):
-                    folium.Marker(
-                        location=[data.iloc[i]["Latitude"], data.iloc[i]["Longitude"]],
-                        popup=f"Name: {data.iloc[i]['Station Name']}, STID: {data.iloc[i]['STID']}, State: {data.iloc[i]['State']}",
-                    ).add_to(marker_cluster)
-                return marker_cluster
-            marker_cluster = get_marker_cluster(data)
-            marker_cluster.add_to(t)
+    # with col2:
 
-            folium.LayerControl().add_to(t)
-            folium.plugins.LocateControl().add_to(t)
-            folium.plugins.Fullscreen().add_to(t)
-            folium.plugins.Geocoder().add_to(t)
-
-            # Save last object clicked to session state
-            if "last_object_clicked" not in st.session_state:
-                st.session_state["last_object_clicked"] = None
-
-            # Load last object clicked if it exists
-            last_object_clicked = st.session_state["last_object_clicked"]
-
-            output = st_folium(
-                t, width=width, height=height, returned_objects=["last_object_clicked"]
-            )
-
-    with row1_col2:
-        st.write(output)
-    with st.expander("Click here to expand and view weather forecast"):
-        if output["last_object_clicked"] is not None:
-            detailed_forecast_df = get_forecast_periods_df(output)
+    st.header("Weather Forecast")
+    if output["last_object_clicked"] is not None:
+        st.write(f"Forecast for Latitude: {output['last_object_clicked']['lat']} Longitude: {output['last_object_clicked']['lng']}")
+        with st.spinner("Loading weather forecast..."):
+            detailed_forecast_df = get_forecast_df(output)
             st.dataframe(detailed_forecast_df)
-main()
-app()
+
+
+if __name__ == "__main__":
+    main()
+    app()
