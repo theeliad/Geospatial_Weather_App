@@ -111,6 +111,21 @@ def app():
 
     # with col2:
 
+        # Save last object clicked to session state
+        # if "last_object_clicked" not in st.session_state:
+        #     st.session_state["last_object_clicked"] = None
+
+        # # Load last object clicked if it exists
+        # last_object_clicked = st.session_state["last_object_clicked"]
+
+        # Display the map
+        output = st_folium(
+            folium_map, width=width, height=height, returned_objects=["last_object_clicked"]
+        )
+
+    # with col2:
+    #     st.write(output)
+
     st.header("Weather Forecast")
     if output["last_object_clicked"] is not None:
         st.write(f"Forecast for Latitude: {output['last_object_clicked']['lat']} Longitude: {output['last_object_clicked']['lng']}")

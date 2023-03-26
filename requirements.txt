@@ -5,3 +5,4 @@ nwsapy==1.0.3
 folium==0.14.0
 streamlit==1.20.0
 streamlit-folium==0.11.1
+

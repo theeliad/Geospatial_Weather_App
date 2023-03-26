@@ -27,13 +27,6 @@ def get_stations_df(stations_url):
         print(f"An error occurred while processing the stations data: {e}")
 
 
-get_stations_df(stations_url)
-
-
-
-# Get the DataFrame of weather stations
-#def get_stations():
-#    stations_df = get_stations_df(stations_url)
-#    return stations_df
-
-#stations_df = get_stations()
+if __name__ == "__main__":
+    stations_df = get_stations_df(stations_url)
+    print(stations_df)

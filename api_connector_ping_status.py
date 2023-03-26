@@ -17,4 +17,6 @@ def api_connector_ping_status():
     else:
         print(server_ping.status)  # will print OK
 
-api_connector_ping_status()
+
+if __name__ == "__main__":
+    api_connector_ping_status()

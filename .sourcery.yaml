@@ -1,0 +1,22 @@
+ignore:
+  - __pycache__
+  - venv
+  - .git
+  - .github
+  - .vscode
+  - .idea
+
+rule_settings:
+  enable: [default]
+  python_version: '3.9'
+  rule_types:
+    - refactoring
+    - suggestion
+    - comment
+  disable:
+    - assign-if-exp
+    - merge-nested-ifs
+    - inline-immediately-returned-variable
+    - list-literal
+    - dict-literal
+    - use-named-expression
