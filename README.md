@@ -7,7 +7,7 @@ You can search on an U.S Map, NWS weather stations and with just one click show 
 
 
 
-### 👨‍💻 Libraries
+### 👨‍💻 Libraries:
 
 <a href="https://pandas.pydata.org/"><img src="https://img.shields.io/badge/pandas%20-%23150458.svg?&style=for-the-badge&logo=pandas&logoColor=white"/>
     
