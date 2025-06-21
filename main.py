@@ -12,7 +12,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Using the modern @st.cache_data decorator.
 @st.cache_data
 def load_station_data():
     """Loads weather station data from the local CSV file."""
@@ -66,8 +65,8 @@ if not all_stations_df.empty:
         m = folium.Map(location=[lat, lon], zoom_start=10)
         folium.Marker([lat, lon], popup=selected_station_data['Station Name'], tooltip=selected_station_data['Station Name']).add_to(m)
         
-        # Using use_container_width=True, which is supported by Streamlit Cloud's up-to-date libraries.
-        st_folium(m, height=450, use_container_width=True)
+        # This syntax is compatible with streamlit-folium==0.14.0 from requirements.txt
+        st_folium(m, height=450, width=725)
 
         with st.expander("View 7-Day Forecast", expanded=True):
             with st.spinner("Fetching latest forecast from NWS..."):
