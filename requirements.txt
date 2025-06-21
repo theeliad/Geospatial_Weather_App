@@ -2,7 +2,8 @@
 
 streamlit==1.22.0
 pandas==1.5.3
+numpy==1.24.4            # <-- This is the critical fix for the binary incompatibility
 requests==2.28.2
 folium==0.14.0
-streamlit-folium==0.14.0  # Stable, available, and compatible with streamlit 1.22.0
-nwsapy==1.0.3            # The latest version confirmed to be available by the logs
+streamlit-folium==0.14.0
+nwsapy==1.0.3
