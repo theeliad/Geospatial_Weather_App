@@ -4,5 +4,5 @@ streamlit==1.22.0
 pandas==1.5.3
 requests==2.28.2
 folium==0.14.0
-streamlit-folium==0.14.0  # <-- Using a known stable and available version
-nwsapy==1.0.3            # <-- Using the latest available version from the logs
+streamlit-folium==0.14.0  # Stable, available, and compatible with streamlit 1.22.0
+nwsapy==1.0.3            # The latest version confirmed to be available by the logs
