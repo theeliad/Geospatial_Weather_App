@@ -72,7 +72,8 @@ if not all_stations_df.empty:
                 forecast_df = get_forecast_periods_df(lat, lon)
 
             if forecast_df is not None:
-                st.dataframe(forecast_df, use_container_width=True, hide_index=True)
+                # The 'hide_index' argument is removed to ensure compatibility.
+                st.dataframe(forecast_df, use_container_width=True)
             else:
                 st.warning("Could not retrieve forecast for this location.")
     else:
