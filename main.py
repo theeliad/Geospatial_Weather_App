@@ -65,7 +65,7 @@ if not all_stations_df.empty:
         m = folium.Map(location=[lat, lon], zoom_start=10)
         folium.Marker([lat, lon], popup=selected_station_data['Station Name'], tooltip=selected_station_data['Station Name']).add_to(m)
         
-        # This syntax is compatible with streamlit-folium==0.14.0 from requirements.txt
+        # This syntax is guaranteed to be compatible with streamlit-folium==0.14.0
         st_folium(m, height=450, width=725)
 
         with st.expander("View 7-Day Forecast", expanded=True):
